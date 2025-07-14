@@ -28,34 +28,71 @@ public class Main {
 
             switch (choice) {
                 case 1:
+
+
                     System.out.print("Enter Employee ID: ");
                     int id = scanner.nextInt();
                     scanner.nextLine();
-                    System.out.print("Enter Name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Enter Salary: ");
-                    double salary = scanner.nextDouble();
-                    System.out.print("Enter Age: ");
-                    int age = scanner.nextInt();
+
+                    String name;
+                    do {
+                        System.out.print("Enter Name: ");
+                        name = scanner.nextLine();
+                    } while (!Validation.isValidName(name));
+
+                    double salary;
+                    do {
+                        System.out.print("Enter Salary: ");
+                        salary = scanner.nextDouble();
+                    } while (!Validation.isValidSalary(salary));
+
+                    int age;
+                    do {
+                        System.out.print("Enter Age: ");
+                        age = scanner.nextInt();
+                    } while (!Validation.isValidAge(age));
                     scanner.nextLine();
+
                     System.out.print("Enter Gender: ");
                     String gender = scanner.nextLine();
+
                     System.out.print("Enter Address: ");
                     String address = scanner.nextLine();
+
                     System.out.print("Enter City: ");
                     String city = scanner.nextLine();
-                    System.out.print("Enter DOB (YYYY-MM-DD): ");
-                    String dob = scanner.nextLine();
-                    System.out.print("Enter DOJ (YYYY-MM-DD): ");
-                    String doj = scanner.nextLine();
+
+                    String dob;
+                    do {
+                        System.out.print("Enter DOB (YYYY-MM-DD): ");
+                        dob = scanner.nextLine();
+                    } while (!Validation.isValidDate(dob));
+
+                    String doj;
+                    do {
+                        System.out.print("Enter DOJ (YYYY-MM-DD): ");
+                        doj = scanner.nextLine();
+                    } while (!Validation.isValidDate(doj));
+
                     System.out.print("Enter Department Name: ");
                     String dept = scanner.nextLine();
+
                     System.out.print("Enter Designation: ");
                     String designation = scanner.nextLine();
-                    System.out.print("Enter PAN Card Number: ");
-                    String pan = scanner.nextLine();
-                    System.out.print("Enter Aadhar Number: ");
-                    String aadhar = scanner.nextLine();
+
+                    String pan;
+                    do {
+                        System.out.print("Enter PAN Card Number: ");
+                        pan = scanner.nextLine();
+                    } while (!Validation.isValidPAN(pan));
+
+                    String aadhar;
+                    do {
+                        System.out.print("Enter Aadhar Number: ");
+                        aadhar = scanner.nextLine();
+                    } while (!Validation.isValidAadhaar(aadhar));
+
+                    System.out.println("\nAll inputs are valid. Employee data recorded successfully.");
 
                     Employee emp = new Employee(id, name, salary, age, gender, address, city, dob, doj, dept, designation, pan, aadhar);
                     manager.addEmployee(emp);

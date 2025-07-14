@@ -67,5 +67,23 @@ public class Employee {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", name='" + name + '\'' +
+                ", salary=" + salary +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", dob='" + dob + '\'' +
+                ", doj='" + doj + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                ", designation='" + designation + '\'' +
+                ", panCardNumber='" + panCardNumber + '\'' +
+                ", aadharNumber='" + aadharNumber + '\'' +
+                '}';
+    }
     // Add other getters and setters as needed
 }
