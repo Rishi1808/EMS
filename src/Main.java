@@ -4,6 +4,8 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static EmployeManager manager = new EmployeManager();
 
+
+    // it is like a mobile call customer care service it ask for input(parameters as per the requirements
     private enum MenuOption {
         ADD_EMPLOYEE(1, "Add Employee") {
             @Override
@@ -136,6 +138,7 @@ public class Main {
         public String getDescription() {
             return description;
         }
+
 
         public static MenuOption fromNumber(int number) {
             for (MenuOption option : values()) {

@@ -6,6 +6,7 @@ public class EmployeManager {
     private Map<Integer, Employee> employeeById = new HashMap<>();
 
     public boolean addEmployee(Employee emp) {
+        // if we want to add employee, if the map already contains empID return false;
         if (emp == null || employeeById.containsKey(emp.getEmployeeId())) {
             return false;
         }
@@ -32,6 +33,8 @@ public class EmployeManager {
         return employeeById.get(empId);
     }
 
+
+    // we are not using this, (check) from line 38 to 47 ...
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass())
@@ -74,6 +77,8 @@ public class EmployeManager {
         return false;
     }
 
+
+    // this function is returning how many emp get their salary updated using this function
     public int updateSalaryByDepartment(String dept, double newSalary) {
         if (newSalary < 0) {
             return 0;
@@ -81,6 +86,7 @@ public class EmployeManager {
 
         int count = 0;
         for (Employee emp : employeeList) {
+            // .equalsIgnoreCase is a method of string
             if (emp.getDepartmentName().equalsIgnoreCase(dept)) {
                 emp.setSalary(newSalary);
                 count++;
@@ -99,6 +105,7 @@ public class EmployeManager {
     }
 
     public Employee getHighestSalaryEmployee() {
+        // here Collections.max nedded to know what is the the basis of comaparison as Employee has different parameters(name, salary)
         return employeeList.isEmpty() ? null
                 : Collections.max(employeeList, Comparator.comparingDouble(Employee::getSalary));
     }
