@@ -95,7 +95,25 @@ public class Main {
                 listAllEmployees();
             }
         },
-        EXIT(16, "Exit") {
+        UPDATE_SALARY_BY_PERCENTAGE_ID(16, "Update Salary by Percentage (ID)") {
+            @Override
+            public void execute() {
+                updateSalaryByPercentageById();
+            }
+        },
+        UPDATE_SALARY_BY_PERCENTAGE_DEPT(17, "Update Salary by Percentage (Department)") {
+            @Override
+            public void execute() {
+                updateSalaryByPercentageByDepartment();
+            }
+        },
+        UPDATE_SALARY_BY_PERCENTAGE_ALL(18, "Update Salary by Percentage (All)") {
+            @Override
+            public void execute() {
+                updateSalaryByPercentageForAll();
+            }
+        },
+        EXIT(19, "Exit") {
             @Override
             public void execute() {
                 /* Exit handled in processChoice */ }
@@ -429,15 +447,15 @@ public class Main {
         }
 
         System.out.println("Employee found: " + emp.getName() + " (ID: " + emp.getEmployeeId() + ")");
-        System.out.println("Current Salary: ₹" + emp.getSalary());
+        System.out.println("Current Salary: Rs." + emp.getSalary());
 
         double newSalary = getValidDoubleInput("Enter new salary: ");
         double oldSalary = emp.getSalary(); // Store the old salary before updating
 
         if (manager.updateSalaryById(updateId, newSalary)) {
             System.out.println("Salary updated successfully.");
-            System.out.println("Previous Salary: ₹" + oldSalary);
-            System.out.println("New Salary: ₹" + newSalary);
+            System.out.println("Previous Salary: Rs." + oldSalary);
+            System.out.println("New Salary: Rs." + newSalary);
         } else {
             System.out.println("Failed to update salary. Invalid salary value.");
         }
@@ -465,7 +483,7 @@ public class Main {
         for (Employee emp : deptEmployees) {
             System.out.println("ID: " + emp.getEmployeeId() + 
                              ", Name: " + emp.getName() + 
-                             ", Current Salary: ₹" + emp.getSalary());
+                             ", Current Salary: Rs." + emp.getSalary());
         }
         System.out.println("-".repeat(60));
         System.out.println("Total employees found: " + deptEmployees.size());
@@ -475,7 +493,7 @@ public class Main {
         int updated = manager.updateSalaryByDepartment(dept, newSalary);
         if (updated > 0) {
             System.out.println("Successfully updated salary for " + updated + " employees in " + dept + " department.");
-            System.out.println("New Salary: ₹" + newSalary);
+            System.out.println("New Salary: Rs." + newSalary);
         } else {
             System.out.println("Failed to update salary. Invalid salary value.");
         }
@@ -497,7 +515,7 @@ public class Main {
             System.out.println("ID: " + emp.getEmployeeId() + 
                              ", Name: " + emp.getName() + 
                              ", Department: " + emp.getDepartmentName() + 
-                             ", Current Salary: ₹" + emp.getSalary());
+                             ", Current Salary: Rs." + emp.getSalary());
         }
         System.out.println("=".repeat(70));
         System.out.println("Total employees: " + allEmployees.size());
@@ -515,9 +533,159 @@ public class Main {
         int updated = manager.updateSalaryForAll(newSalary);
         if (updated > 0) {
             System.out.println("Successfully updated salary for all " + updated + " employees.");
-            System.out.println("New Salary: ₹" + newSalary);
+            System.out.println("New Salary: Rs." + newSalary);
         } else {
             System.out.println("Failed to update salary. Invalid salary value.");
+        }
+    }
+
+    // Percentage-based salary update methods
+    private static void updateSalaryByPercentageById() {
+        System.out.println("\n--- Update Salary by Percentage (ID) ---");
+        int updateId = getValidIntegerInput("Enter Employee ID to update salary: ");
+
+        // First, check if employee exists and display current salary
+        Employee emp = manager.searchById(updateId);
+        if (emp == null) {
+            System.out.println("Employee not found with ID: " + updateId);
+            return;
+        }
+
+        System.out.println("Employee found: " + emp.getName() + " (ID: " + emp.getEmployeeId() + ")");
+        System.out.println("Current Salary: Rs." + emp.getSalary());
+
+        double percentage = getValidDoubleInput("Enter percentage increase/decrease (e.g., 10 for 10% increase, -5 for 5% decrease): ");
+        
+        if (percentage < -100) {
+            System.out.println("Error: Percentage decrease cannot be more than 100%.");
+            return;
+        }
+
+        double oldSalary = emp.getSalary();
+        double newSalary = oldSalary + (oldSalary * percentage / 100);
+
+        if (newSalary < 0) {
+            System.out.println("Error: The percentage decrease would result in a negative salary.");
+            return;
+        }
+
+        if (manager.updateSalaryByPercentageById(updateId, percentage)) {
+            System.out.println("Salary updated successfully.");
+            System.out.println("Previous Salary: Rs." + oldSalary);
+            System.out.println("Percentage Change: " + (percentage >= 0 ? "+" : "") + percentage + "%");
+            System.out.println("New Salary: Rs." + String.format("%.2f", newSalary));
+        } else {
+            System.out.println("Failed to update salary.");
+        }
+    }
+
+    private static void updateSalaryByPercentageByDepartment() {
+        System.out.println("\n--- Update Salary by Percentage (Department) ---");
+        System.out.print("Enter Department Name to update salary: ");
+        String dept = scanner.nextLine().trim();
+
+        if (dept.isEmpty()) {
+            System.out.println("Department name cannot be empty.");
+            return;
+        }
+
+        // Display current employees and their salaries in the department
+        List<Employee> deptEmployees = manager.searchByDepartment(dept);
+        if (deptEmployees.isEmpty()) {
+            System.out.println("No employees found in department: " + dept);
+            return;
+        }
+
+        System.out.println("\nEmployees in " + dept + " department:");
+        System.out.println("-".repeat(60));
+        for (Employee emp : deptEmployees) {
+            System.out.println("ID: " + emp.getEmployeeId() + 
+                             ", Name: " + emp.getName() + 
+                             ", Current Salary: Rs." + emp.getSalary());
+        }
+        System.out.println("-".repeat(60));
+        System.out.println("Total employees found: " + deptEmployees.size());
+
+        double percentage = getValidDoubleInput("Enter percentage increase/decrease for all employees in this department: ");
+        
+        if (percentage < -100) {
+            System.out.println("Error: Percentage decrease cannot be more than 100%.");
+            return;
+        }
+
+        System.out.println("Preview of salary changes:");
+        for (Employee emp : deptEmployees) {
+            double oldSalary = emp.getSalary();
+            double newSalary = oldSalary + (oldSalary * percentage / 100);
+            System.out.println(emp.getName() + ": Rs." + oldSalary + " -> Rs." + String.format("%.2f", newSalary));
+        }
+
+        System.out.print("Are you sure you want to apply " + (percentage >= 0 ? "+" : "") + percentage + "% to all employees in " + dept + "? (y/n): ");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+        
+        if (!confirmation.equals("y") && !confirmation.equals("yes")) {
+            System.out.println("Salary update cancelled.");
+            return;
+        }
+
+        int updated = manager.updateSalaryByPercentageByDepartment(dept, percentage);
+        if (updated > 0) {
+            System.out.println("Successfully updated salary for " + updated + " employees in " + dept + " department.");
+            System.out.println("Percentage Change: " + (percentage >= 0 ? "+" : "") + percentage + "%");
+        } else {
+            System.out.println("Failed to update salary. Invalid percentage or would result in negative salary.");
+        }
+    }
+
+    private static void updateSalaryByPercentageForAll() {
+        System.out.println("\n--- Update Salary by Percentage (All Employees) ---");
+        
+        // Display all current employees and their salaries
+        List<Employee> allEmployees = manager.getAllEmployees();
+        if (allEmployees.isEmpty()) {
+            System.out.println("No employees found in the system.");
+            return;
+        }
+
+        System.out.println("\nCurrent employees and their salaries:");
+        System.out.println("=".repeat(70));
+        for (Employee emp : allEmployees) {
+            System.out.println("ID: " + emp.getEmployeeId() + 
+                             ", Name: " + emp.getName() + 
+                             ", Department: " + emp.getDepartmentName() + 
+                             ", Current Salary: Rs." + emp.getSalary());
+        }
+        System.out.println("=".repeat(70));
+        System.out.println("Total employees: " + allEmployees.size());
+
+        double percentage = getValidDoubleInput("Enter percentage increase/decrease for ALL employees: ");
+        
+        if (percentage < -100) {
+            System.out.println("Error: Percentage decrease cannot be more than 100%.");
+            return;
+        }
+
+        System.out.println("Preview of salary changes:");
+        for (Employee emp : allEmployees) {
+            double oldSalary = emp.getSalary();
+            double newSalary = oldSalary + (oldSalary * percentage / 100);
+            System.out.println(emp.getName() + ": Rs." + oldSalary + " -> Rs." + String.format("%.2f", newSalary));
+        }
+
+        System.out.print("Are you sure you want to apply " + (percentage >= 0 ? "+" : "") + percentage + "% to all " + allEmployees.size() + " employees? (y/n): ");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+        
+        if (!confirmation.equals("y") && !confirmation.equals("yes")) {
+            System.out.println("Salary update cancelled.");
+            return;
+        }
+
+        int updated = manager.updateSalaryByPercentageForAll(percentage);
+        if (updated > 0) {
+            System.out.println("Successfully updated salary for all " + updated + " employees.");
+            System.out.println("Percentage Change: " + (percentage >= 0 ? "+" : "") + percentage + "%");
+        } else {
+            System.out.println("Failed to update salary. Invalid percentage or would result in negative salary.");
         }
     }
 
@@ -556,10 +724,10 @@ public class Main {
         Employee lowest = manager.getLowestSalaryEmployee();
 
         if (highest != null) {
-            System.out.println("Highest Salary: ₹" + highest.getSalary() + " (" + highest.getName() + ")");
+            System.out.println("Highest Salary: Rs." + highest.getSalary() + " (" + highest.getName() + ")");
         }
         if (lowest != null) {
-            System.out.println("Lowest Salary: ₹" + lowest.getSalary() + " (" + lowest.getName() + ")");
+            System.out.println("Lowest Salary: Rs." + lowest.getSalary() + " (" + lowest.getName() + ")");
         }
     }
 
@@ -581,7 +749,7 @@ public class Main {
             System.out.println("   ID: " + emp.getEmployeeId());
             System.out.println("   Name: " + emp.getName());
             System.out.println("   Department: " + emp.getDepartmentName());
-            System.out.println("   Salary: ₹" + emp.getSalary());
+            System.out.println("   Salary: Rs." + emp.getSalary());
             System.out.println("   Full Details: " + emp.toString());
             System.out.println("-".repeat(80));
         }

@@ -73,21 +73,21 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "employeeId=" + employeeId +
-                ", name='" + name + '\'' +
-                ", salary=" + salary +
-                ", age=" + age +
-                ", gender='" + gender + '\'' +
-                ", address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", dob='" + dob + '\'' +
-                ", doj='" + doj + '\'' +
-                ", departmentName='" + departmentName + '\'' +
-                ", designation='" + designation + '\'' +
-                ", panCardNumber='" + panCardNumber + '\'' +
-                ", aadharNumber='" + aadharNumber + '\'' +
-                '}';
+        return String.format("""
+                
+                Employee Details:
+                -----------------
+                ID: %d | Name: %s | Department: %s
+                Designation: %s | Age: %d years | Gender: %s
+                Salary: Rs.%.2f | DOB: %s | DOJ: %s
+                Address: %s, %s
+                PAN: %s | Aadhar: %s
+                """, 
+                employeeId, name, departmentName,
+                designation, age, gender,
+                salary, dob, doj,
+                address, city,
+                panCardNumber, aadharNumber);
     }
     // Add other getters and setters as needed
 }

@@ -128,4 +128,54 @@ public class EmployeManager {
         return new ArrayList<>(employeeList);
     }
 
+    // Percentage-based salary update methods
+    public boolean updateSalaryByPercentageById(int empId, double percentage) {
+        Employee emp = searchById(empId);
+        if (emp != null && percentage >= -100) { // Allow negative percentage for salary cuts, but not below -100%
+            double currentSalary = emp.getSalary();
+            double newSalary = currentSalary + (currentSalary * percentage / 100);
+            if (newSalary >= 0) { // Ensure salary doesn't go negative
+                emp.setSalary(newSalary);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int updateSalaryByPercentageByDepartment(String dept, double percentage) {
+        if (percentage < -100) {
+            return 0;
+        }
+
+        int count = 0;
+        for (Employee emp : employeeList) {
+            if (emp.getDepartmentName().equalsIgnoreCase(dept)) {
+                double currentSalary = emp.getSalary();
+                double newSalary = currentSalary + (currentSalary * percentage / 100);
+                if (newSalary >= 0) { // Ensure salary doesn't go negative
+                    emp.setSalary(newSalary);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int updateSalaryByPercentageForAll(double percentage) {
+        if (percentage < -100) {
+            return 0;
+        }
+
+        int count = 0;
+        for (Employee emp : employeeList) {
+            double currentSalary = emp.getSalary();
+            double newSalary = currentSalary + (currentSalary * percentage / 100);
+            if (newSalary >= 0) { // Ensure salary doesn't go negative
+                emp.setSalary(newSalary);
+                count++;
+            }
+        }
+        return count;
+    }
+
 }
