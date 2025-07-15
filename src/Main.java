@@ -421,12 +421,25 @@ public class Main {
         System.out.println("\n--- Update Salary by ID ---");
         int updateId = getValidIntegerInput("Enter Employee ID to update salary: ");
 
+        // First, check if employee exists and display current salary
+        Employee emp = manager.searchById(updateId);
+        if (emp == null) {
+            System.out.println("Employee not found with ID: " + updateId);
+            return;
+        }
+
+        System.out.println("Employee found: " + emp.getName() + " (ID: " + emp.getEmployeeId() + ")");
+        System.out.println("Current Salary: ₹" + emp.getSalary());
+
         double newSalary = getValidDoubleInput("Enter new salary: ");
+        double oldSalary = emp.getSalary(); // Store the old salary before updating
 
         if (manager.updateSalaryById(updateId, newSalary)) {
             System.out.println("Salary updated successfully.");
+            System.out.println("Previous Salary: ₹" + oldSalary);
+            System.out.println("New Salary: ₹" + newSalary);
         } else {
-            System.out.println("Failed to update salary. Employee not found or invalid salary.");
+            System.out.println("Failed to update salary. Invalid salary value.");
         }
     }
 
@@ -440,25 +453,71 @@ public class Main {
             return;
         }
 
-        double newSalary = getValidDoubleInput("Enter new salary: ");
+        // Display current employees and their salaries in the department
+        List<Employee> deptEmployees = manager.searchByDepartment(dept);
+        if (deptEmployees.isEmpty()) {
+            System.out.println("No employees found in department: " + dept);
+            return;
+        }
+
+        System.out.println("\nEmployees in " + dept + " department:");
+        System.out.println("-".repeat(60));
+        for (Employee emp : deptEmployees) {
+            System.out.println("ID: " + emp.getEmployeeId() + 
+                             ", Name: " + emp.getName() + 
+                             ", Current Salary: ₹" + emp.getSalary());
+        }
+        System.out.println("-".repeat(60));
+        System.out.println("Total employees found: " + deptEmployees.size());
+
+        double newSalary = getValidDoubleInput("Enter new salary for all employees in this department: ");
 
         int updated = manager.updateSalaryByDepartment(dept, newSalary);
         if (updated > 0) {
-            System.out.println("Updated salary for " + updated + " employees in " + dept + " department.");
+            System.out.println("Successfully updated salary for " + updated + " employees in " + dept + " department.");
+            System.out.println("New Salary: ₹" + newSalary);
         } else {
-            System.out.println("No employees found in department or invalid salary.");
+            System.out.println("Failed to update salary. Invalid salary value.");
         }
     }
 
     private static void updateSalaryForAll() {
         System.out.println("\n--- Update Salary for All Employees ---");
-        double newSalary = getValidDoubleInput("Enter new salary for all employees: ");
+        
+        // Display all current employees and their salaries
+        List<Employee> allEmployees = manager.getAllEmployees();
+        if (allEmployees.isEmpty()) {
+            System.out.println("No employees found in the system.");
+            return;
+        }
+
+        System.out.println("\nCurrent employees and their salaries:");
+        System.out.println("=".repeat(70));
+        for (Employee emp : allEmployees) {
+            System.out.println("ID: " + emp.getEmployeeId() + 
+                             ", Name: " + emp.getName() + 
+                             ", Department: " + emp.getDepartmentName() + 
+                             ", Current Salary: ₹" + emp.getSalary());
+        }
+        System.out.println("=".repeat(70));
+        System.out.println("Total employees: " + allEmployees.size());
+
+        double newSalary = getValidDoubleInput("Enter new salary for ALL employees: ");
+
+        System.out.print("Are you sure you want to update salary for all " + allEmployees.size() + " employees? (y/n): ");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+        
+        if (!confirmation.equals("y") && !confirmation.equals("yes")) {
+            System.out.println("Salary update cancelled.");
+            return;
+        }
 
         int updated = manager.updateSalaryForAll(newSalary);
         if (updated > 0) {
-            System.out.println("Updated salary for all " + updated + " employees.");
+            System.out.println("Successfully updated salary for all " + updated + " employees.");
+            System.out.println("New Salary: ₹" + newSalary);
         } else {
-            System.out.println("No employees to update or invalid salary.");
+            System.out.println("Failed to update salary. Invalid salary value.");
         }
     }
 
