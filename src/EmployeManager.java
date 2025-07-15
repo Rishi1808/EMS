@@ -3,26 +3,39 @@ import java.util.*;
 public class EmployeManager {
     private List<Employee> employeeList = new ArrayList<>();
 
-    public void addEmployee(Employee emp) {
+    private Map<Integer, Employee> employeeById = new HashMap<>();
+
+    public boolean addEmployee(Employee emp) {
+        if (emp == null || employeeById.containsKey(emp.getEmployeeId())) {
+            return false;
+        }
+
         employeeList.add(emp);
+        employeeById.put(emp.getEmployeeId(), emp);
+
+        return true;
     }
 
-    public void deleteEmployee(int empId) {
-        employeeList.removeIf(emp -> emp.getEmployeeId() == empId);
+    public boolean deleteEmployee(int empId) {
+        Employee emp = employeeById.get(empId);
+        if (emp == null) {
+            return false;
+        }
+
+        employeeList.remove(emp);
+        employeeById.remove(empId);
+
+        return true;
     }
 
     public Employee searchById(int empId) {
-        for (Employee emp : employeeList) {
-            if (emp.getEmployeeId() == empId) {
-                return emp;
-            }
-        }
-        return null;
+        return employeeById.get(empId);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
         EmployeManager that = (EmployeManager) o;
         return Objects.equals(employeeList, that.employeeList);
     }
@@ -52,34 +65,63 @@ public class EmployeManager {
         return result;
     }
 
-    public void updateSalaryById(int empId, double newSalary) {
+    public boolean updateSalaryById(int empId, double newSalary) {
         Employee emp = searchById(empId);
-        if (emp != null) {
+        if (emp != null && newSalary >= 0) {
             emp.setSalary(newSalary);
+            return true;
         }
+        return false;
     }
 
-    public void updateSalaryByDepartment(String dept, double newSalary) {
+    public int updateSalaryByDepartment(String dept, double newSalary) {
+        if (newSalary < 0) {
+            return 0;
+        }
+
+        int count = 0;
         for (Employee emp : employeeList) {
             if (emp.getDepartmentName().equalsIgnoreCase(dept)) {
                 emp.setSalary(newSalary);
+                count++;
             }
         }
+        return count;
     }
 
-    public void updateSalaryForAll(double newSalary) {
-        for (Employee emp : employeeList) {
-            emp.setSalary(newSalary);
+    public int updateSalaryForAll(double newSalary) {
+        if (newSalary < 0) {
+            return 0;
         }
+
+        employeeList.forEach(emp -> emp.setSalary(newSalary));
+        return employeeList.size();
     }
 
     public Employee getHighestSalaryEmployee() {
-        return Collections.max(employeeList, Comparator.comparingDouble(Employee::getSalary));
+        return employeeList.isEmpty() ? null
+                : Collections.max(employeeList, Comparator.comparingDouble(Employee::getSalary));
     }
 
     public Employee getLowestSalaryEmployee() {
-        return Collections.min(employeeList, Comparator.comparingDouble(Employee::getSalary));
+        return employeeList.isEmpty() ? null
+                : Collections.min(employeeList, Comparator.comparingDouble(Employee::getSalary));
     }
 
+    public int getEmployeeCount() {
+        return employeeList.size();
+    }
+
+    public List<String> getAllDepartments() {
+        Set<String> departments = new HashSet<>();
+        for (Employee emp : employeeList) {
+            departments.add(emp.getDepartmentName());
+        }
+        return new ArrayList<>(departments);
+    }
+
+    public boolean hasEmployee(int empId) {
+        return employeeById.containsKey(empId);
+    }
 
 }
