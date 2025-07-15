@@ -124,4 +124,8 @@ public class EmployeManager {
         return employeeById.containsKey(empId);
     }
 
+    public List<Employee> getAllEmployees() {
+        return new ArrayList<>(employeeList);
+    }
+
 }

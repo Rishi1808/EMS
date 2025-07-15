@@ -67,6 +67,10 @@ public class Employee {
         return name;
     }
 
+    public String getDoj() {
+        return doj;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +

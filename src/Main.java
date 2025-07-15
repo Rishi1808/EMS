@@ -89,7 +89,13 @@ public class Main {
                 showSystemStatistics();
             }
         },
-        EXIT(15, "Exit") {
+        LIST_ALL_EMPLOYEES(15, "List All Employees") {
+            @Override
+            public void execute() {
+                listAllEmployees();
+            }
+        },
+        EXIT(16, "Exit") {
             @Override
             public void execute() {
                 /* Exit handled in processChoice */ }
@@ -263,6 +269,13 @@ public class Main {
                 Validation::isValidDate,
                 "Invalid date format. Please use YYYY-MM-DD format.");
 
+        // Validate that employee is at least 18 years old at joining
+        if (!Validation.isAgeAtLeast18AtJoining(dob, doj)) {
+            System.out.println("Error: Employee must be at least 18 years old at the time of joining.");
+            System.out.println("Based on DOB (" + dob + ") and DOJ (" + doj + "), the employee was under 18 when joining.");
+            return;
+        }
+
         System.out.print("Enter Department Name: ");
         String dept = scanner.nextLine().trim();
 
@@ -389,6 +402,14 @@ public class Main {
             String newDob = getValidStringInput("Enter new DOB (YYYY-MM-DD): ",
                     Validation::isValidDate,
                     "Invalid date format. Please use YYYY-MM-DD format.");
+            
+            // Validate that employee would still be at least 18 at joining with new DOB
+            if (!Validation.isAgeAtLeast18AtJoining(newDob, emp.getDoj())) {
+                System.out.println("Error: With the new DOB, employee would be under 18 at the time of joining.");
+                System.out.println("DOB: " + newDob + ", DOJ: " + emp.getDoj());
+                return;
+            }
+            
             emp.setDob(newDob);
             System.out.println("DOB updated successfully.");
         } else {
@@ -480,6 +501,30 @@ public class Main {
         }
         if (lowest != null) {
             System.out.println("Lowest Salary: ₹" + lowest.getSalary() + " (" + lowest.getName() + ")");
+        }
+    }
+
+    private static void listAllEmployees() {
+        System.out.println("\n===== All Employees =====");
+        List<Employee> employees = manager.getAllEmployees();
+        
+        if (employees.isEmpty()) {
+            System.out.println("No employees found in the system.");
+            return;
+        }
+        
+        System.out.println("Total Employees: " + employees.size());
+        System.out.println("=".repeat(80));
+        
+        for (int i = 0; i < employees.size(); i++) {
+            Employee emp = employees.get(i);
+            System.out.println((i + 1) + ". Employee Details:");
+            System.out.println("   ID: " + emp.getEmployeeId());
+            System.out.println("   Name: " + emp.getName());
+            System.out.println("   Department: " + emp.getDepartmentName());
+            System.out.println("   Salary: ₹" + emp.getSalary());
+            System.out.println("   Full Details: " + emp.toString());
+            System.out.println("-".repeat(80));
         }
     }
 }

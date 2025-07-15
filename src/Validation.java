@@ -66,4 +66,35 @@ public class Validation {
     public static boolean isValidString(String str, int minLength, int maxLength) {
         return str != null && str.trim().length() >= minLength && str.trim().length() <= maxLength;
     }
+
+    public static boolean isAgeAtLeast18AtJoining(String dob, String doj) {
+        if (!isValidDate(dob) || !isValidDate(doj)) {
+            return false;
+        }
+
+        try {
+            String[] dobParts = dob.split("-");
+            String[] dojParts = doj.split("-");
+
+            int dobYear = Integer.parseInt(dobParts[0]);
+            int dobMonth = Integer.parseInt(dobParts[1]);
+            int dobDay = Integer.parseInt(dobParts[2]);
+
+            int dojYear = Integer.parseInt(dojParts[0]);
+            int dojMonth = Integer.parseInt(dojParts[1]);
+            int dojDay = Integer.parseInt(dojParts[2]);
+
+            // Calculate age at joining
+            int ageAtJoining = dojYear - dobYear;
+
+            // Adjust if the birthday hasn't occurred yet in the joining year
+            if (dojMonth < dobMonth || (dojMonth == dobMonth && dojDay < dobDay)) {
+                ageAtJoining--;
+            }
+
+            return ageAtJoining >= 18;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 }
