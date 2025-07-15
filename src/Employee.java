@@ -71,6 +71,18 @@ public class Employee {
         return doj;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
     @Override
     public String toString() {
         return String.format("""

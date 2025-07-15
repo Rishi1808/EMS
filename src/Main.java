@@ -194,6 +194,8 @@ public class Main {
                     return false;
                 }
                 selectedOption.execute();
+                // Pause before showing menu again
+                pauseBeforeMenu();
             } else {
                 System.out.println("Invalid choice. Please try again.");
             }
@@ -202,6 +204,11 @@ public class Main {
             System.out.println("Please try again.");
         }
         return true;
+    }
+
+    private static void pauseBeforeMenu() {
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 
     private static int getValidIntegerInput(String prompt) {
@@ -741,17 +748,35 @@ public class Main {
         }
         
         System.out.println("Total Employees: " + employees.size());
-        System.out.println("=".repeat(80));
+        System.out.println();
         
-        for (int i = 0; i < employees.size(); i++) {
-            Employee emp = employees.get(i);
-            System.out.println((i + 1) + ". Employee Details:");
-            System.out.println("   ID: " + emp.getEmployeeId());
-            System.out.println("   Name: " + emp.getName());
-            System.out.println("   Department: " + emp.getDepartmentName());
-            System.out.println("   Salary: Rs." + emp.getSalary());
-            System.out.println("   Full Details: " + emp.toString());
-            System.out.println("-".repeat(80));
+        // Print table header
+        System.out.println("+" + "-".repeat(125) + "+");
+        System.out.printf("| %-4s | %-20s | %-15s | %-20s | %-10s | %-6s | %-10s | %-12s |\n",
+                "ID", "Name", "Department", "Designation", "Salary", "Age", "Gender", "DOJ");
+        System.out.println("+" + "-".repeat(125) + "+");
+        
+        // Print employee data
+        for (Employee emp : employees) {
+            System.out.printf("| %-4d | %-20s | %-15s | %-20s | %-10.2f | %-6d | %-10s | %-12s |\n",
+                    emp.getEmployeeId(),
+                    truncateString(emp.getName(), 20),
+                    truncateString(emp.getDepartmentName(), 15),
+                    truncateString(emp.getDesignation(), 20),
+                    emp.getSalary(),
+                    emp.getAge(),
+                    emp.getGender(),
+                    emp.getDoj());
         }
+        
+        System.out.println("+" + "-".repeat(125) + "+");
+        System.out.println("\nNote: Use individual search options to view complete employee details.");
+    }
+    
+    // Helper method to truncate strings for table display
+    private static String truncateString(String str, int maxLength) {
+        if (str == null) return "";
+        if (str.length() <= maxLength) return str;
+        return str.substring(0, maxLength - 3) + "...";
     }
 }
